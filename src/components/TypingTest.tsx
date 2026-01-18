@@ -8,6 +8,7 @@ import { ShareIcon, CopyIcon, TrendingUpIcon, TrendingDownIcon, MinusIcon } from
 
 interface TypingTestProps {
   text: string;
+  onReset?: () => void; // Callback to trigger when test is reset
 }
 
 // Define the type for stored results
@@ -118,6 +119,14 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
         setStartTime(Date.now());
         setIsActive(true);
       }
+
+      // Check if the user has completed the entire text
+      if (value.length === text.length) {
+        // End the test early since the user completed the text
+        setTimeout(() => {
+          endTest();
+        }, 0); // Small delay to ensure the UI updates properly
+      }
     }
   };
 
@@ -175,6 +184,11 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
 
     if (textareaRef.current) {
       textareaRef.current.focus();
+    }
+
+    // Call the onReset callback if provided
+    if (onReset) {
+      onReset();
     }
   };
 
@@ -323,11 +337,22 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
       </div>
 
       {/* Results Dialog */}
-      <Dialog open={resultsOpen} onOpenChange={setResultsOpen}>
+      <Dialog
+        open={resultsOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            // When dialog is closed, reset the test
+            resetTest();
+          } else {
+            // Keep the dialog open
+            setResultsOpen(open);
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="text-2xl text-primary text-center">
-              Test Results
+              {currentIndex === text.length && timeLeft > 0 ? "Congratulations!" : "Test Results"}
             </DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-4 py-4">
