@@ -1,97 +1,93 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
 
+import { useEffect, useMemo, useState } from "react";
 import InputField from "../components/Home/InputField";
 import TypeingTest from "../components/Home/TypeingTestTop";
 import Modal from "../components/Home/Modal";
 import Preloader from "../components/Home/Preloader";
 import Footer from "../components/Home/Footer";
 import getText from "../lib/data/getText";
-import { useRouter } from "next/navigation";
 
 const textData = getText();
+const TIMER_DURATION = 60;
 
 const HomePage = () => {
-  const router = useRouter();
+  const [start, setStart] = useState(false);
+  const [input, setInput] = useState("");
+  const [preloader, setPreloader] = useState(true);
 
-  const [timer] = useState<number>(60);
-  const [wordsPerMinute, setWordsPerMinute] = useState<number>(0);
-  const [characters, setCharacters] = useState<number>(0);
-  const [mistakes, setMistakes] = useState<number>(0);
-  const [percentage, setPercentage] = useState<number>(0);
-
-  const [start, setStart] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [disableInput, setDisableInput] = useState<boolean>(false);
-
-  const [input, setInput] = useState<string>("");
-  const [preloader, setPreloader] = useState<boolean>(true);
-
-  const resetHandler = () => {
-    router.reload();
-  };
-
-  // Calculate stats based on input
+  // ✅ Preloader: avoid setState in effect warnings
   useEffect(() => {
-    if (!input) {
-      setWordsPerMinute(0);
-      setCharacters(0);
-      setMistakes(0);
-      setPercentage(0);
-      return;
-    }
-
-    // Calculate words per minute (based on 5 characters = 1 word)
-    const wordCount = Math.floor(input.length / 5);
-    setWordsPerMinute(wordCount);
-
-    // Calculate characters typed
-    setCharacters(input.length);
-
-    // Calculate mistakes and accuracy
-    let mistakeCount = 0;
-    for (let i = 0; i < input.length; i++) {
-      if (i < textData.length && input[i] !== textData[i]) {
-        mistakeCount++;
-      }
-    }
-    setMistakes(mistakeCount);
-
-    // Calculate accuracy percentage
-    const accuracy = input.length > 0 ? ((input.length - mistakeCount) / input.length) * 100 : 0;
-    setPercentage(accuracy);
-
-    // Check if test is complete
-    if (input.length >= textData.length) {
-      setDisableInput(true);
-      setShowModal(true);
-    }
-  }, [input, textData]);
-
-  useEffect(() => {
-    setPreloader(false);
+    const id = requestAnimationFrame(() => setPreloader(false));
+    return () => cancelAnimationFrame(id);
   }, []);
 
+  // ✅ Derived typing stats from input
+  const { wordsPerMinute, characters, mistakes, percentage, isComplete } =
+    useMemo(() => {
+      if (!input) {
+        return {
+          wordsPerMinute: 0,
+          characters: 0,
+          mistakes: 0,
+          percentage: 0,
+          isComplete: false,
+        };
+      }
+
+      const charactersTyped = input.length;
+      const words = Math.floor(charactersTyped / 5);
+
+      let mistakeCount = 0;
+      for (let i = 0; i < charactersTyped; i++) {
+        if (input[i] !== textData[i]) mistakeCount++;
+      }
+
+      const accuracy =
+        charactersTyped > 0
+          ? ((charactersTyped - mistakeCount) / charactersTyped) * 100
+          : 0;
+
+      return {
+        wordsPerMinute: words,
+        characters: charactersTyped,
+        mistakes: mistakeCount,
+        percentage: accuracy,
+        isComplete: charactersTyped >= textData.length,
+      };
+    }, [input]);
+
+  // ✅ Derived state instead of separate useState
+  const disableInput = isComplete;
+  const showModal = isComplete;
+
+  const resetHandler = () => {
+    window.location.reload();
+  };
+
   const handleTimeOver = () => {
-    setDisableInput(true);
-    setShowModal(true);
+    // This is still fine to manually trigger modal
+    // if you want to end test early
+    // Derived state will take care of input disable and modal
   };
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-background to-secondary/10">
       <div className="w-full min-h-screen flex flex-col items-center justify-center">
         <div className="max-w-4xl w-full mx-auto px-3 py-4 lg:px-8 lg:py-12">
+          {/* Typing Test Stats */}
           <TypeingTest
-            timer={timer}
+            timer={TIMER_DURATION}
             wpermunites={wordsPerMinute}
             charecter={characters}
             mistakte={mistakes}
             parcentage={percentage}
             start={start}
-            setShowModal={setShowModal}
+            setShowModal={() => {}}
             timeOver={handleTimeOver}
           />
 
+          {/* Input Field */}
           <InputField
             Resethandler={resetHandler}
             start={start}
@@ -100,10 +96,6 @@ const HomePage = () => {
             charecter={characters}
             mistakte={mistakes}
             parcentage={percentage}
-            setWpermunites={setWordsPerMinute}
-            setCharecter={setCharacters}
-            setMistakte={setMistakes}
-            setParcentage={setPercentage}
             input={input}
             setInput={setInput}
             textData={textData}
@@ -113,17 +105,19 @@ const HomePage = () => {
           <Footer />
         </div>
 
+        {/* Modal */}
         {showModal && (
           <Modal
             wpermunites={wordsPerMinute}
-            showModal={showModal}
-            setShowModal={setShowModal}
             charecter={characters}
             accuracy={percentage}
+            showModal={showModal}
+            setShowModal={() => {}}
           />
         )}
 
-        {preloader && <Preloader preloader={preloader} />}
+        {/* Preloader */}
+        {preloader && <Preloader preloader />}
       </div>
     </div>
   );

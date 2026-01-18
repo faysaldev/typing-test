@@ -74,7 +74,7 @@ const Modal: React.FC<Props> = ({
             Great job completing the typing test! Keep practicing to improve your speed and accuracy.
           </p>
           <Button
-            onClick={() => router.refresh()}
+            onClick={() => window.location.reload()}
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
           >
             Try Again
