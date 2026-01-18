@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://typing-test.vercel.app",
+    url: "https://typing-test-fm.vercel.app",
     title: "Typing Speed Test - Improve Your Typing Skills",
     description:
       "Free online typing speed test. Measure your WPM (words per minute) and accuracy. Practice typing with real-time feedback and track your progress over time.",
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://typing-test.vercel.app",
+    canonical: "https://typing-test-fm.vercel.app",
   },
   verification: {
     google: "your-google-verification-code", // Add your Google Search Console verification code
