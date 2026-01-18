@@ -4,10 +4,20 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
-import { ShareIcon, CopyIcon } from "lucide-react";
+import { ShareIcon, CopyIcon, TrendingUpIcon, TrendingDownIcon, MinusIcon } from "lucide-react";
 
 interface TypingTestProps {
   text: string;
+}
+
+// Define the type for stored results
+interface StoredResult {
+  wpm: number;
+  accuracy: number;
+  time: number;
+  correctChars: number;
+  incorrectChars: number;
+  date: string;
 }
 
 const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
@@ -17,6 +27,11 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const [isActive, setIsActive] = useState(false);
   const [resultsOpen, setResultsOpen] = useState(false);
+  const [previousResult, setPreviousResult] = useState<StoredResult | null>(null);
+  const [comparison, setComparison] = useState<{
+    wpmDiff: number;
+    accuracyDiff: number;
+  } | null>(null);
   const [stats, setStats] = useState({
     wpm: 0,
     accuracy: 0,
@@ -26,6 +41,46 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
   });
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Load previous results from localStorage on component mount
+  useEffect(() => {
+    const savedResults = localStorage.getItem('typingTestResults');
+    if (savedResults) {
+      const results: StoredResult[] = JSON.parse(savedResults);
+      if (results.length > 0) {
+        setPreviousResult(results[0]); // Get the only stored result
+      }
+    }
+  }, []);
+
+  // Function to save results to localStorage
+  const saveResultsToStorage = (result: typeof stats) => {
+    const currentDate = new Date().toISOString();
+    const newResult: StoredResult = {
+      wpm: result.wpm,
+      accuracy: result.accuracy,
+      time: result.time,
+      correctChars: result.correctChars,
+      incorrectChars: result.incorrectChars,
+      date: currentDate
+    };
+
+    // Store only the most recent result
+    localStorage.setItem('typingTestResults', JSON.stringify([newResult]));
+
+    // Update the previous result state
+    setPreviousResult(newResult);
+  };
+
+  // Function to calculate comparison with previous result
+  const calculateComparison = (current: typeof stats, previous: StoredResult | null) => {
+    if (!previous) return null;
+
+    return {
+      wpmDiff: current.wpm - previous.wpm,
+      accuracyDiff: current.accuracy - previous.accuracy
+    };
+  };
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -82,13 +137,22 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
     const accuracy =
       totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 0;
 
-    setStats({
+    const newStats = {
       wpm,
       accuracy,
       time: 1,
       correctChars,
       incorrectChars,
-    });
+    };
+
+    setStats(newStats);
+
+    // Save results to localStorage
+    saveResultsToStorage(newStats);
+
+    // Calculate comparison with previous result
+    const comparisonResult = calculateComparison(newStats, previousResult);
+    setComparison(comparisonResult);
 
     setResultsOpen(true);
   };
@@ -205,6 +269,7 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
             ref={textareaRef}
             value={inputValue}
             onChange={handleInputChange}
+            onPaste={(e) => e.preventDefault()} // Disable pasting
             placeholder="Start typing here..."
             className="w-full min-h-[120px] text-lg p-4 font-mono focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary"
             disabled={currentIndex >= text.length}
@@ -269,12 +334,40 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
             <div className="bg-primary/10 p-4 rounded-lg text-center">
               <p className="text-sm text-primary/70">Words Per Minute</p>
               <p className="text-3xl font-bold text-primary">{stats.wpm} WPM</p>
+              {comparison && (
+                <div className="flex items-center justify-center mt-1">
+                  {comparison.wpmDiff > 0 ? (
+                    <TrendingUpIcon className="w-4 h-4 text-green-500 mr-1" />
+                  ) : comparison.wpmDiff < 0 ? (
+                    <TrendingDownIcon className="w-4 h-4 text-red-500 mr-1" />
+                  ) : (
+                    <MinusIcon className="w-4 h-4 text-gray-500 mr-1" />
+                  )}
+                  <span className={`text-sm ${comparison.wpmDiff > 0 ? 'text-green-500' : comparison.wpmDiff < 0 ? 'text-red-500' : 'text-gray-500'}`}>
+                    {comparison.wpmDiff > 0 ? '+' : ''}{comparison.wpmDiff}
+                  </span>
+                </div>
+              )}
             </div>
             <div className="bg-primary/10 p-4 rounded-lg text-center">
               <p className="text-sm text-primary/70">Accuracy</p>
               <p className="text-3xl font-bold text-primary">
                 {stats.accuracy}%
               </p>
+              {comparison && (
+                <div className="flex items-center justify-center mt-1">
+                  {comparison.accuracyDiff > 0 ? (
+                    <TrendingUpIcon className="w-4 h-4 text-green-500 mr-1" />
+                  ) : comparison.accuracyDiff < 0 ? (
+                    <TrendingDownIcon className="w-4 h-4 text-red-500 mr-1" />
+                  ) : (
+                    <MinusIcon className="w-4 h-4 text-gray-500 mr-1" />
+                  )}
+                  <span className={`text-sm ${comparison.accuracyDiff > 0 ? 'text-green-500' : comparison.accuracyDiff < 0 ? 'text-red-500' : 'text-gray-500'}`}>
+                    {comparison.accuracyDiff > 0 ? '+' : ''}{comparison.accuracyDiff}%
+                  </span>
+                </div>
+              )}
             </div>
             <div className="bg-primary/10 p-4 rounded-lg text-center">
               <p className="text-sm text-primary/70">Time</p>
@@ -287,6 +380,53 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
               </p>
             </div>
           </div>
+
+          {/* Show comparison if there's a previous result, otherwise just show current result */}
+          {previousResult ? (
+            <div className="py-4 border-t border-gray-200 dark:border-gray-700 mt-4">
+              <h3 className="text-lg font-semibold text-center text-primary mb-3">Comparison with Previous</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-secondary/20 p-4 rounded-lg text-center">
+                  <p className="text-sm text-primary/70">Previous WPM</p>
+                  <p className="text-2xl font-bold text-primary">{previousResult.wpm}</p>
+                </div>
+                <div className="bg-secondary/20 p-4 rounded-lg text-center">
+                  <p className="text-sm text-primary/70">Previous Accuracy</p>
+                  <p className="text-2xl font-bold text-primary">{previousResult.accuracy}%</p>
+                </div>
+              </div>
+              <p className="text-center text-sm text-primary/70 mt-3">
+                {comparison?.wpmDiff !== undefined && comparison?.accuracyDiff !== undefined ? (
+                  <>
+                    {comparison.wpmDiff > 0 ? (
+                      <span className="text-green-500">WPM improved by {comparison.wpmDiff} </span>
+                    ) : comparison.wpmDiff < 0 ? (
+                      <span className="text-red-500">WPM decreased by {Math.abs(comparison.wpmDiff)} </span>
+                    ) : (
+                      <span className="text-gray-500">WPM unchanged </span>
+                    )}
+                    {comparison.accuracyDiff > 0 ? (
+                      <span className="text-green-500">| Accuracy improved by {comparison.accuracyDiff}%</span>
+                    ) : comparison.accuracyDiff < 0 ? (
+                      <span className="text-red-500">| Accuracy decreased by {Math.abs(comparison.accuracyDiff)}%</span>
+                    ) : (
+                      <span className="text-gray-500">| Accuracy unchanged</span>
+                    )}
+                  </>
+                ) : (
+                  "No comparison available"
+                )}
+              </p>
+            </div>
+          ) : (
+            <div className="py-4 border-t border-gray-200 dark:border-gray-700 mt-4">
+              <h3 className="text-lg font-semibold text-center text-primary mb-3">First Test</h3>
+              <p className="text-center text-sm text-primary/70">
+                Complete another test to see your improvement!
+              </p>
+            </div>
+          )}
+
           <div className="py-2">
             <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
               <div
