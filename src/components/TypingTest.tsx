@@ -8,7 +8,7 @@ import { ShareIcon, CopyIcon, TrendingUpIcon, TrendingDownIcon, MinusIcon } from
 
 interface TypingTestProps {
   text: string;
-  onReset?: () => void; // Callback to trigger when test is reset
+  onreset?: () => void; // Callback to trigger when test is reset
 }
 
 // Define the type for stored results
@@ -21,7 +21,7 @@ interface StoredResult {
   date: string;
 }
 
-const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
+const TypingTest: React.FC<TypingTestProps> = ({ text, onreset }) => {
   const [inputValue, setInputValue] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [startTime, setStartTime] = useState<number | null>(null);
@@ -186,9 +186,9 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
       textareaRef.current.focus();
     }
 
-    // Call the onReset callback if provided
-    if (onReset) {
-      onReset();
+    // Call the onreset callback if provided
+    if (onreset) {
+      onreset();
     }
   };
 

@@ -26,7 +26,7 @@ const HomePage = () => {
       <div className="w-full min-h-screen flex flex-col items-center justify-center">
         <div className="max-w-4xl w-full mx-auto px-3 py-4 lg:px-8 lg:py-12">
           {/* Typing Test Component */}
-          <TypingTest text={text} onReset={handleReset} />
+          <TypingTest text={text} onreset={handleReset} />
 
           {/* Footer */}
           <Footer />
