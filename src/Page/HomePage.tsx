@@ -1,5 +1,5 @@
+"use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 
 import InputField from "../components/Home/InputField";
 import TypeingTest from "../components/Home/TypeingTestTop";
@@ -7,6 +7,7 @@ import Modal from "../components/Home/Modal";
 import Preloader from "../components/Home/Preloader";
 import Footer from "../components/Home/Footer";
 import getText from "../lib/data/getText";
+import { useRouter } from "next/navigation";
 
 const textData = getText();
 
