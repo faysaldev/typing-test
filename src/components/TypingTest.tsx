@@ -14,7 +14,7 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
   const [inputValue, setInputValue] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [startTime, setStartTime] = useState<number | null>(null);
-  const [timeLeft, setTimeLeft] = useState<number>(60); // Fixed 60 seconds
+  const [timeLeft, setTimeLeft] = useState<number>(60);
   const [isActive, setIsActive] = useState(false);
   const [resultsOpen, setResultsOpen] = useState(false);
   const [stats, setStats] = useState({
@@ -26,15 +26,7 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
   });
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Initialize audio element
-  useEffect(() => {
-    audioRef.current = new Audio("/keyboard_press.mp3");
-    audioRef.current.volume = 0.3; // Set volume to 30%
-  }, []);
-
-  // Timer effect
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
 
@@ -43,14 +35,14 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
             clearInterval(interval as NodeJS.Timeout);
-            endTest(); // End the test when time is up
+            endTest();
             return 0;
           }
           return prev - 1;
         });
       }, 1000);
     } else if (timeLeft === 0 && isActive) {
-      endTest(); // End the test when time reaches 0
+      endTest();
     }
 
     return () => {
@@ -58,32 +50,15 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
     };
   }, [isActive, timeLeft]);
 
-  // Play keyboard sound
-  const playSound = () => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0;
-      audioRef.current
-        .play()
-        .catch((e) => console.log("Audio play failed:", e));
-    }
-  };
-
-  // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
 
-    // Play sound for each keystroke
-    playSound();
-
-    // Only allow typing if time hasn't expired
     if (timeLeft > 0) {
       setInputValue(value);
 
-      // Calculate current index based on input length
       const newIndex = Math.min(value.length, text.length);
       setCurrentIndex(newIndex);
 
-      // Start timer on first keystroke
       if (!startTime) {
         setStartTime(Date.now());
         setIsActive(true);
@@ -103,14 +78,14 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
     const incorrectChars = totalChars - correctChars;
 
     // Calculate WPM based on correctly typed characters in 1 minute (5 chars = 1 word)
-    const wpm = Math.round(correctChars / 5); // Since time is fixed at 1 minute
+    const wpm = Math.round(correctChars / 5);
     const accuracy =
       totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 0;
 
     setStats({
       wpm,
       accuracy,
-      time: 1, // Fixed at 1 minute
+      time: 1,
       correctChars,
       incorrectChars,
     });
@@ -123,7 +98,7 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
     setInputValue("");
     setCurrentIndex(0);
     setStartTime(null);
-    setTimeLeft(60); // Reset timer to 60 seconds
+    setTimeLeft(60);
     setIsActive(false);
     setResultsOpen(false);
     setStats({
@@ -146,7 +121,6 @@ const TypingTest: React.FC<TypingTestProps> = ({ text }) => {
     }
   }, []);
 
-  // Render the text with proper styling for correct/incorrect characters
   const renderText = () => {
     return text.split("").map((char, index) => {
       let className = "text-lg ";
