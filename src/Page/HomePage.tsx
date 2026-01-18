@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import InputField from "../components/Home/InputField";
-import TypeingTest from "../components/Home/TypeingTestTop";
+import TypingTest from "../components/Home/TypeingTestTop";
 import Modal from "../components/Home/Modal";
 import Preloader from "../components/Home/Preloader";
 import Footer from "../components/Home/Footer";
@@ -76,7 +76,7 @@ const HomePage = () => {
       <div className="w-full min-h-screen flex flex-col items-center justify-center">
         <div className="max-w-4xl w-full mx-auto px-3 py-4 lg:px-8 lg:py-12">
           {/* Typing Test Stats */}
-          <TypeingTest
+          <TypingTest
             timer={TIMER_DURATION}
             wpermunites={wordsPerMinute}
             charecter={characters}

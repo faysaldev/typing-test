@@ -3,19 +3,15 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/src/components/ui/button";
 
 interface Props {
-  Resethandler: any;
-  start: any;
-  setStart: any;
-  wpermunites: any;
-  charecter: any;
-  mistakte: any;
-  parcentage: any;
-  setWpermunites: any;
-  setCharecter: any;
-  setMistakte: any;
-  setParcentage: any;
-  input: any;
-  setInput: any;
+  Resethandler: () => void;
+  start: boolean;
+  setStart: React.Dispatch<React.SetStateAction<boolean>>;
+  wpermunites: number;
+  charecter: number;
+  mistakte: number;
+  parcentage: number;
+  input: string;
+  setInput: React.Dispatch<React.SetStateAction<string>>;
   textData: string;
   disableInput: boolean;
 }
