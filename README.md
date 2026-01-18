@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Typing Speed Test Application
 
-## Getting Started
+A professional typing speed test application built with Next.js, TypeScript, and Tailwind CSS. This application allows users to test and improve their typing skills by measuring words per minute (WPM) and accuracy.
 
-First, run the development server:
+## Features
+
+- Real-time typing assessment with WPM and accuracy calculation
+- Visual feedback for correct and incorrect characters
+- Progress tracking with localStorage persistence
+- Performance comparison with previous tests
+- Responsive design for all device sizes
+- Dark mode support
+- Social sharing capabilities
+- Paste protection to ensure authentic typing tests
+
+## Technologies Used
+
+- [Next.js](https://nextjs.org/) - React framework for production
+- [TypeScript](https://www.typescriptlang.org/) - Strongly typed programming language
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [Lucide React](https://lucide.dev/) - Beautiful icon library
+- [shadcn/ui](https://ui.shadcn.com/) - Reusable UI components
+
+## Installation
+
+1. Clone the repository:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Navigate to the project directory:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cd typing-test
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Install dependencies:
 
-## Learn More
+```bash
+pnpm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+4. Run the development server:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
-## Deploy on Vercel
+## Usage
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. The application will display a random text passage to type.
+2. Start typing in the input field below the text.
+3. The application will highlight correct characters in green and incorrect ones in red.
+4. Your WPM and accuracy will be updated in real-time.
+5. After 60 seconds, the test will automatically end, or you can click "Finish Test".
+6. Your results will be displayed in a modal with the option to try again or share your score.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+
+```
+typing-test/
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── not-found.tsx
+├── src/
+│   ├── components/
+│   │   ├── ui/
+│   │   └── TypingTest.tsx
+│   └── lib/
+├── public/
+│   └── favicon.png
+├── README.md
+├── LICENSE
+└── package.json
+```
+
+## Contributing
+
+Contributions are welcome! Here's how you can contribute:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Icons by [Lucide React](https://lucide.dev/)
+- UI components inspired by [shadcn/ui](https://ui.shadcn.com/)
+
+## Support
+
+If you encounter any issues or have questions, please file an issue on the [GitHub repository](https://github.com/faysaldev/typing-test).

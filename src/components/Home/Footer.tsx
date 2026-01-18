@@ -1,3 +1,4 @@
+import { Github } from "lucide-react";
 import React from "react";
 
 const Footer = () => {
@@ -18,7 +19,17 @@ const Footer = () => {
           </h1>
         </div>
         <div>
-          <h1 className="text-primary font-medium">Powered by TypingTest</h1>
+          <h1 className="text-primary font-medium">
+            {" "}
+            <a
+              href="https://github.com/faysaldev/typing-test"
+              className="hover:text-black hover:bg-black transition-colors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Github className="h-5" />
+            </a>
+          </h1>
         </div>
       </div>
     </footer>
