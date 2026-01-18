@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import InputField from "../components/Home/InputField";
 import TypeingTest from "../components/Home/TypeingTestTop";
@@ -31,20 +31,42 @@ const HomePage = () => {
     router.reload();
   };
 
+  // Calculate stats based on input
   useEffect(() => {
-    if (!input) return;
+    if (!input) {
+      setWordsPerMinute(0);
+      setCharacters(0);
+      setMistakes(0);
+      setPercentage(0);
+      return;
+    }
 
-    const wordCount = input.trim().split(/\s+/).length;
-    const characterCount = input.length;
-
+    // Calculate words per minute (based on 5 characters = 1 word)
+    const wordCount = Math.floor(input.length / 5);
     setWordsPerMinute(wordCount);
-    setCharacters(characterCount);
 
-    if (characterCount >= textData.length) {
+    // Calculate characters typed
+    setCharacters(input.length);
+
+    // Calculate mistakes and accuracy
+    let mistakeCount = 0;
+    for (let i = 0; i < input.length; i++) {
+      if (i < textData.length && input[i] !== textData[i]) {
+        mistakeCount++;
+      }
+    }
+    setMistakes(mistakeCount);
+
+    // Calculate accuracy percentage
+    const accuracy = input.length > 0 ? ((input.length - mistakeCount) / input.length) * 100 : 0;
+    setPercentage(accuracy);
+
+    // Check if test is complete
+    if (input.length >= textData.length) {
       setDisableInput(true);
       setShowModal(true);
     }
-  }, [input]);
+  }, [input, textData]);
 
   useEffect(() => {
     setPreloader(false);
@@ -56,9 +78,9 @@ const HomePage = () => {
   };
 
   return (
-    <div className="w-full min-h-screen">
-      <div className="customBg w-full min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-        <div className="max-w-[1270px] mx-auto px-3 py-4 lg:px-8 lg:py-12">
+    <div className="w-full min-h-screen bg-gradient-to-br from-background to-secondary/10">
+      <div className="w-full min-h-screen flex flex-col items-center justify-center">
+        <div className="max-w-4xl w-full mx-auto px-3 py-4 lg:px-8 lg:py-12">
           <TypeingTest
             timer={timer}
             wpermunites={wordsPerMinute}
@@ -97,6 +119,7 @@ const HomePage = () => {
             showModal={showModal}
             setShowModal={setShowModal}
             charecter={characters}
+            accuracy={percentage}
           />
         )}
 

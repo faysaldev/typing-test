@@ -1,12 +1,20 @@
 import React from "react";
-import { XIcon } from "@heroicons/react/outline";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/src/components/ui/dialog";
+import { Button } from "@/src/components/ui/button";
 
 interface Props {
-  showModal: any;
-  setShowModal: any;
-  wpermunites: any;
-  charecter: any;
+  showModal: boolean;
+  setShowModal: (show: boolean) => void;
+  wpermunites: number;
+  charecter: number;
+  accuracy: number;
 }
 
 const Modal: React.FC<Props> = ({
@@ -14,59 +22,66 @@ const Modal: React.FC<Props> = ({
   setShowModal,
   wpermunites,
   charecter,
+  accuracy,
 }) => {
   const router = useRouter();
+
+
+  // Determine typing level based on WPM
+  const getTypingLevel = (wpm: number) => {
+    if (wpm >= 60) return { level: "Expert", emoji: "🚀", color: "text-green-600" };
+    if (wpm >= 40) return { level: "Advanced", emoji: "⚡", color: "text-blue-600" };
+    if (wpm >= 25) return { level: "Intermediate", emoji: "👍", color: "text-yellow-600" };
+    return { level: "Beginner", emoji: "🐢", color: "text-orange-600" };
+  };
+
+  const levelInfo = getTypingLevel(wpermunites);
+
   return (
-    <div className="w-full backdrop-blur-sm h-full customBgModal flex items-center justify-center">
-      {/* wrapper */}
-      <div className="max-w-[70%] mx-auto bg-white relative px-4 py-6 rounded-md shadow-md">
-        {/* content */}
-        <div className="flex space-x-6 pt-6">
-          {/* Close icon */}
-          <div>
-            <XIcon
-              onClick={() => setShowModal(false)}
-              className="h-5 w-5 transform hover:scale-150 hover:ease-in-out text-black cursor-pointer absolute top-3 right-3"
-            />
+    <Dialog open={showModal} onOpenChange={setShowModal}>
+      <DialogContent className="sm:max-w-md bg-white border-primary/30">
+        <DialogHeader>
+          <DialogTitle className="text-2xl text-center">
+            <span className={`text-3xl mr-2 ${levelInfo.color}`}>{levelInfo.emoji}</span>
+            Your Typing Result
+          </DialogTitle>
+          <DialogDescription className="text-center">
+            Here's how you performed in the typing test
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="grid gap-4 py-4">
+          <div className="flex justify-between items-center border-b pb-2">
+            <span className="text-muted-foreground">Words Per Minute:</span>
+            <span className="font-bold text-primary">{wpermunites} WPM</span>
           </div>
-          {/* left */}
-          <div className="min-w-[200px] flex-grow">
-            <img
-              className="w-full object-contain"
-              src="https://res.cloudinary.com/dn1j6dpd7/image/upload/v1600425019/typing-speed-test/avatars/turtle.svg"
-              alt=""
-            />
+          <div className="flex justify-between items-center border-b pb-2">
+            <span className="text-muted-foreground">Characters Typed:</span>
+            <span className="font-bold text-primary">{charecter}</span>
           </div>
-          {/* right */}
-          <div className="max-w-[400px]">
-            <h2 className="text-3xl pb-1 font-bold font-mono">
-              You{"'"}re a Turtle.
-            </h2>
-            <p className="text-base text-gray-600">
-              Well... You type with the speed of{" "}
-              <span className="font-bold text-xl text-black">
-                {wpermunites} WPM - {charecter} CPM.
-              </span>{" "}
-              Your accuracy was{" "}
-              <span className="font-bold text-xl text-black">
-                {(100 * charecter) / 500}%.
-              </span>{" "}
-              It could be better!
-            </p>
+          <div className="flex justify-between items-center border-b pb-2">
+            <span className="text-muted-foreground">Accuracy:</span>
+            <span className="font-bold text-primary">{Math.round(accuracy)}%</span>
+          </div>
+          <div className="flex justify-between items-center border-b pb-2">
+            <span className="text-muted-foreground">Level:</span>
+            <span className={`font-bold ${levelInfo.color}`}>{levelInfo.level}</span>
           </div>
         </div>
 
-        {/* tray gamin button */}
-        <div className="flex items-center justify-center py-5">
-          <button
-            className="bg-blue-500 px-6 font-semibold shadow py-2 rounded-md text-white"
-            onClick={() => router.reload()}
+        <div className="flex flex-col items-center py-2">
+          <p className="text-center mb-4">
+            Great job completing the typing test! Keep practicing to improve your speed and accuracy.
+          </p>
+          <Button
+            onClick={() => router.refresh()}
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
           >
-            Try again
-          </button>
+            Try Again
+          </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
+import { Button } from "@/src/components/ui/button";
 
 interface Props {
   Resethandler: any;
@@ -39,11 +40,43 @@ const InputField: React.FC<Props> = ({
   const [textContent, settextContent] = useState<string>("");
   const textArray = textData.split("");
 
+  // Sound effects
+  const playKeyPressSound = () => {
+    const audio = new Audio("/keyboard_press.mp3");
+    audio.volume = 0.3; // Reduce volume to make it less intrusive
+    audio.play().catch(e => console.log("Audio play failed:", e));
+  };
+
+  const playWrongSound = () => {
+    const audio = new Audio("/buzzing_wrong.mp3");
+    audio.volume = 0.3; // Reduce volume to make it less intrusive
+    audio.play().catch(e => console.log("Audio play failed:", e));
+  };
+
   const inputChangeHandler = (e: any) => {
-    setInput(e.target.value);
-    setStart(true);
-    const cAudio = new Audio("/keyboard_press.mp3");
-    cAudio.play();
+    const inputValue = e.target.value;
+    setInput(inputValue);
+
+    // Play sound based on correctness
+    if (inputValue.length > input.length) { // Only when adding characters
+      const lastCharIndex = inputValue.length - 1;
+      if (lastCharIndex < textData.length) {
+        const expectedChar = textData[lastCharIndex];
+        const enteredChar = inputValue[lastCharIndex];
+
+        if (expectedChar !== enteredChar) {
+          playWrongSound(); // Wrong character
+        } else {
+          playKeyPressSound(); // Correct character
+        }
+      } else {
+        playKeyPressSound(); // Character beyond text
+      }
+    }
+
+    if (!start) {
+      setStart(true);
+    }
   };
 
   useEffect(() => {
@@ -53,66 +86,67 @@ const InputField: React.FC<Props> = ({
   }, []);
 
   return (
-    <div>
+    <div className="w-full">
       {/* typing box */}
-      <div className=" min-h-[250px] px-6 py-4 bg-white w-full rounded-md flex flex-col">
-        <p className="text-content">
-          {textArray.map((txt: string, i) => {
-            let color, bgColor;
-            const correct = txt === input[i];
-            if (i < input.length) {
-              bgColor = txt === input[i] ? "transparent" : "";
-              color = txt === input[i] ? "#0066FF" : "#3cdfbccf";
-            }
+      <div className="min-h-[300px] p-6 bg-secondary/10 border border-primary/30 rounded-xl flex flex-col shadow-sm">
+        {/* Display text */}
+        <div className="mb-6 p-4 bg-white rounded-lg border border-primary/20 min-h-[120px] overflow-auto">
+          <p className="text-2xl md:text-3xl leading-relaxed font-mono">
+            {textArray.map((txt: string, i) => {
+              let color = "text-foreground";
+              let bgColor = "transparent";
 
-            return (
-              <span
-                key={i}
-                className={`text-3xl ${
-                  i < input.length && !correct
-                    ? "line-through text-[#0066FF] bg-black"
-                    : "text-black "
-                } `}
-                style={{
-                  color: color,
-                  backgroundColor: bgColor,
-                  lineHeight: "50px",
-                }}
-              >
-                {txt}
-              </span>
-            );
-          })}
-        </p>
+              if (i < input.length) {
+                const correct = txt === input[i];
+                if (correct) {
+                  color = "text-green-600"; // Correct character
+                  bgColor = "bg-green-100";
+                } else {
+                  color = "text-red-600"; // Incorrect character
+                  bgColor = "bg-red-100";
+                }
+              }
 
-        {/* texarea  */}
-        <div className="pt-6 rounded-md text-3xl">
-          <textarea
-            className="outline-none border-gray-600 border-2 resize-none w-full min-h-[350px] rounded-md focus-within:ring-1 focus-within:ring-blue-500 px-4 py-6"
-            value={input}
-            onChange={(e) => inputChangeHandler(e)}
-            autoFocus={true}
-            disabled={disableInput}
-          ></textarea>
+              return (
+                <span
+                  key={i}
+                  className={`${color} ${bgColor} transition-colors duration-100`}
+                >
+                  {txt}
+                </span>
+              );
+            })}
+          </p>
         </div>
 
-        {/* reset button */}
-        <div className="self-end py-5 space-x-5">
-          {/* Reset button */}
-          {start ? (
-            <button
-              onClick={Resethandler}
-              className="px-5 py-2 bg-blue-500 text-white rounded-md cursor-pointer hover:bg-blue-700 transition-all ease-in"
-            >
-              Reset Now
-            </button>
-          ) : (
-            <button
+        {/* textarea */}
+        <div className="mb-4">
+          <textarea
+            className="w-full min-h-[150px] p-4 text-2xl font-mono bg-white border border-primary/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+            value={input}
+            onChange={inputChangeHandler}
+            autoFocus={true}
+            disabled={disableInput}
+            placeholder="Start typing here..."
+          />
+        </div>
+
+        {/* buttons */}
+        <div className="flex justify-end space-x-3">
+          <Button
+            variant="outline"
+            onClick={Resethandler}
+            className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+          >
+            Reset
+          </Button>
+          {!start && (
+            <Button
               onClick={() => setStart(true)}
-              className="px-5 py-2 bg-blue-500 text-white rounded-md cursor-pointer hover:bg-blue-700 transition-all ease-in"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              Start
-            </button>
+              Start Test
+            </Button>
           )}
         </div>
       </div>
