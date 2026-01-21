@@ -78,18 +78,18 @@ const HomePage = () => {
   const durations: TimeDuration[] = [15, 30, 60, 120];
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-background via-background to-secondary/5 transition-colors duration-300">
+    <div className="w-full min-h-screen gradient-bg transition-colors duration-300">
       <div className="w-full min-h-screen flex flex-col">
         {/* Header */}
-        <header className="w-full border-b border-primary/10 bg-background/80 backdrop-blur-sm sticky top-0 z-40">
+        <header className="w-full border-b border-border/50 glass-strong sticky top-0 z-40">
           <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
             {/* Logo & Title */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center shadow-lg glow-primary">
                 <Keyboard className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-primary tracking-tight">
+                <h1 className="text-xl font-bold gradient-text tracking-tight">
                   TypeMaster
                 </h1>
                 <p className="text-xs text-muted-foreground hidden sm:block">
@@ -133,21 +133,21 @@ const HomePage = () => {
         <main className="flex-1 flex flex-col items-center justify-center py-6 px-4">
           <div className="max-w-5xl w-full mx-auto">
             {/* Controls Bar */}
-            <div className="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 bg-secondary/10 rounded-2xl p-4 border border-primary/10">
+            <div className="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 glass rounded-2xl p-4 border border-border/50">
               {/* Duration Selector */}
               <div className="flex items-center gap-2">
-                <Timer className="w-4 h-4 text-primary" />
+                <Timer className="w-4 h-4 text-secondary" />
                 <span className="text-sm text-muted-foreground mr-2">
                   Duration:
                 </span>
-                <div className="flex gap-1 bg-background rounded-lg p-1">
+                <div className="flex gap-1 bg-muted/50 rounded-lg p-1">
                   {durations.map((d) => (
                     <button
                       key={d}
                       onClick={() => handleDurationChange(d)}
                       className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
                         duration === d
-                          ? "bg-primary text-white shadow-md"
+                          ? "bg-gradient-to-r from-primary to-secondary text-white shadow-lg"
                           : "text-muted-foreground hover:text-primary hover:bg-primary/10"
                       }`}
                     >
@@ -161,16 +161,16 @@ const HomePage = () => {
               <div className="flex items-center gap-3">
                 <button
                   onClick={handleReset}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-colors text-sm font-medium"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-primary/20 to-secondary/20 hover:from-primary/30 hover:to-secondary/30 text-primary transition-all text-sm font-medium border border-primary/20"
                 >
                   <RotateCcw className="w-4 h-4" />
                   New Text
                 </button>
-                <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground bg-background/50 px-3 py-2 rounded-lg">
-                  <Zap className="w-3 h-3" />
+                <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg border border-border/50">
+                  <Zap className="w-3 h-3 text-accent" />
                   <span>
                     Press{" "}
-                    <kbd className="px-1 py-0.5 bg-primary/10 rounded text-primary">
+                    <kbd className="px-1.5 py-0.5 bg-primary/20 rounded text-primary border border-primary/30">
                       Tab
                     </kbd>{" "}
                     to restart
@@ -190,14 +190,14 @@ const HomePage = () => {
 
             {/* Keyboard Shortcuts Info */}
             <div className="mt-6 flex flex-wrap justify-center gap-4 text-xs text-muted-foreground">
-              <div className="flex items-center gap-2 bg-secondary/10 px-3 py-2 rounded-lg">
-                <kbd className="px-1.5 py-0.5 bg-primary/10 rounded text-primary font-mono">
+              <div className="flex items-center gap-2 glass px-3 py-2 rounded-lg border border-border/30">
+                <kbd className="px-1.5 py-0.5 bg-primary/20 rounded text-primary font-mono border border-primary/30">
                   Tab
                 </kbd>
                 <span>Restart test</span>
               </div>
-              <div className="flex items-center gap-2 bg-secondary/10 px-3 py-2 rounded-lg">
-                <kbd className="px-1.5 py-0.5 bg-primary/10 rounded text-primary font-mono">
+              <div className="flex items-center gap-2 glass px-3 py-2 rounded-lg border border-border/30">
+                <kbd className="px-1.5 py-0.5 bg-secondary/20 rounded text-secondary font-mono border border-secondary/30">
                   Esc
                 </kbd>
                 <span>End test</span>

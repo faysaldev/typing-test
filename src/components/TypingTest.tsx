@@ -351,16 +351,14 @@ const TypingTest: React.FC<TypingTestProps> = ({
 
       if (index < inputValue.length) {
         if (inputValue[index] === char) {
-          className += "text-green-500";
+          className += "char-correct";
         } else {
-          className +=
-            "text-red-500 bg-red-100 dark:bg-red-900/50 rounded-sm";
+          className += "char-incorrect";
         }
       } else if (index === currentIndex) {
-        className +=
-          "text-primary bg-primary/20 rounded-sm animate-pulse border-l-2 border-primary";
+        className += "char-current";
       } else {
-        className += "text-gray-400 dark:text-gray-500";
+        className += "char-pending";
       }
 
       return (
@@ -368,7 +366,7 @@ const TypingTest: React.FC<TypingTestProps> = ({
           key={index}
           id={`char-${index}`}
           className={className}
-          style={{ fontFamily: "monospace" }}
+          style={{ fontFamily: "var(--font-geist-mono), monospace" }}
         >
           {char}
         </span>
@@ -379,13 +377,13 @@ const TypingTest: React.FC<TypingTestProps> = ({
   return (
     <div className="w-full max-w-5xl mx-auto">
       {/* Main Card */}
-      <div className="bg-background border border-primary/20 rounded-2xl shadow-xl overflow-hidden">
+      <div className="glass-strong rounded-2xl shadow-2xl overflow-hidden border border-border/50">
         {/* Live Stats Bar */}
-        <div className="bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5 border-b border-primary/10 px-6 py-4">
+        <div className="bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5 border-b border-border/50 px-6 py-4">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {/* Live WPM */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
+            <div className="stat-card flex items-center gap-3 p-3 rounded-xl">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
                 <Zap className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -399,8 +397,8 @@ const TypingTest: React.FC<TypingTestProps> = ({
             </div>
 
             {/* Accuracy */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-secondary to-secondary/70 flex items-center justify-center">
+            <div className="stat-card flex items-center gap-3 p-3 rounded-xl">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-secondary to-primary flex items-center justify-center shadow-lg">
                 <Target className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -414,12 +412,12 @@ const TypingTest: React.FC<TypingTestProps> = ({
             </div>
 
             {/* Time */}
-            <div className="flex items-center gap-3">
+            <div className="stat-card flex items-center gap-3 p-3 rounded-xl">
               <div
-                className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transition-all ${
                   timeLeft <= 10 && isActive
-                    ? "bg-gradient-to-br from-red-500 to-red-600 animate-pulse"
-                    : "bg-gradient-to-br from-gray-400 to-gray-500"
+                    ? "bg-gradient-to-br from-destructive to-accent animate-pulse glow-accent"
+                    : "bg-gradient-to-br from-muted-foreground/50 to-muted-foreground/30"
                 }`}
               >
                 <Clock className="w-5 h-5 text-white" />
@@ -429,8 +427,8 @@ const TypingTest: React.FC<TypingTestProps> = ({
                   Time
                 </p>
                 <p
-                  className={`text-2xl font-bold tabular-nums ${
-                    timeLeft <= 10 && isActive ? "text-red-500" : "text-foreground"
+                  className={`text-2xl font-bold tabular-nums transition-colors ${
+                    timeLeft <= 10 && isActive ? "text-destructive" : "text-foreground"
                   }`}
                 >
                   {timeLeft}s
@@ -439,15 +437,15 @@ const TypingTest: React.FC<TypingTestProps> = ({
             </div>
 
             {/* Progress */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+            <div className="stat-card flex items-center gap-3 p-3 rounded-xl">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-success to-secondary flex items-center justify-center shadow-lg">
                 <Type className="w-5 h-5 text-white" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">
                   Chars
                 </p>
-                <p className="text-2xl font-bold text-green-600 tabular-nums">
+                <p className="text-2xl font-bold text-success tabular-nums">
                   {currentIndex}
                   <span className="text-sm text-muted-foreground">
                     /{text.length}
@@ -458,9 +456,9 @@ const TypingTest: React.FC<TypingTestProps> = ({
           </div>
 
           {/* Progress Bar */}
-          <div className="mt-4 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div className="mt-4 h-2 bg-muted rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-primary via-secondary to-primary transition-all duration-300 ease-out"
+              className="h-full bg-gradient-to-r from-primary via-secondary to-accent transition-all duration-300 ease-out"
               style={{ width: `${(currentIndex / text.length) * 100}%` }}
             />
           </div>
@@ -470,11 +468,10 @@ const TypingTest: React.FC<TypingTestProps> = ({
         <div className="p-6">
           <div
             ref={textContainerRef}
-            className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 p-6 rounded-xl border border-primary/10 mb-6 min-h-[180px] max-h-[250px] overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20"
+            className="typing-text bg-gradient-to-b from-muted/30 to-card p-6 rounded-xl border border-border/50 mb-6 min-h-[180px] max-h-[250px] overflow-y-auto scrollbar-thin"
             style={{
               whiteSpace: "pre-wrap",
               wordBreak: "break-word",
-              lineHeight: "2",
             }}
           >
             {renderText()}
@@ -492,19 +489,19 @@ const TypingTest: React.FC<TypingTestProps> = ({
                   ? "Keep typing..."
                   : "Click here and start typing to begin the test..."
               }
-              className={`w-full min-h-[120px] text-lg p-4 font-mono resize-none transition-all duration-200 ${
+              className={`w-full min-h-[120px] text-lg p-4 font-mono resize-none transition-all duration-200 bg-card ${
                 isActive
-                  ? "border-primary ring-2 ring-primary/20"
-                  : "border-primary/30 hover:border-primary/50"
-              } focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary`}
+                  ? "border-primary ring-2 ring-primary/30 glow-primary"
+                  : "border-border hover:border-primary/50"
+              } focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary rounded-xl`}
               disabled={currentIndex >= text.length || timeLeft === 0}
               autoFocus
             />
 
             {/* Status Indicator */}
             {isActive && (
-              <div className="absolute top-3 right-3 flex items-center gap-2 text-xs text-primary bg-primary/10 px-2 py-1 rounded-full">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <div className="absolute top-3 right-3 flex items-center gap-2 text-xs text-success bg-success/10 px-3 py-1.5 rounded-full border border-success/30">
+                <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
                 Test in progress
               </div>
             )}
@@ -515,7 +512,7 @@ const TypingTest: React.FC<TypingTestProps> = ({
             <Button
               onClick={resetTest}
               variant="outline"
-              className="border-primary text-primary hover:text-white cursor-pointer hover:bg-primary flex-1 gap-2"
+              className="border-primary/50 text-primary hover:text-white cursor-pointer hover:bg-gradient-to-r hover:from-primary hover:to-accent hover:border-transparent flex-1 gap-2 transition-all"
             >
               <RefreshCw className="w-4 h-4" />
               Restart Test
@@ -523,7 +520,7 @@ const TypingTest: React.FC<TypingTestProps> = ({
             <Button
               onClick={endTest}
               disabled={!isActive}
-              className="bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90 flex-1 gap-2 disabled:opacity-50"
+              className="bg-gradient-to-r from-primary via-secondary to-accent text-white hover:opacity-90 flex-1 gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
             >
               <CheckCircle className="w-4 h-4" />
               Finish Test
