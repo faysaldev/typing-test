@@ -468,7 +468,7 @@ const TypingTest: React.FC<TypingTestProps> = ({
         <div className="p-6">
           <div
             ref={textContainerRef}
-            className="typing-text bg-gradient-to-b from-muted/30 to-card p-6 rounded-xl border border-border/50 mb-6 min-h-[180px] max-h-[250px] overflow-y-auto scrollbar-thin"
+            className="typing-text bg-white dark:bg-slate-900/80 p-6 rounded-xl border border-slate-200 dark:border-slate-700/50 mb-5 min-h-[180px] max-h-[280px] overflow-y-auto scrollbar-thin shadow-inner"
             style={{
               whiteSpace: "pre-wrap",
               wordBreak: "break-word",
@@ -489,19 +489,19 @@ const TypingTest: React.FC<TypingTestProps> = ({
                   ? "Keep typing..."
                   : "Click here and start typing to begin the test..."
               }
-              className={`w-full min-h-[120px] text-lg p-4 font-mono resize-none transition-all duration-200 bg-card ${
+              className={`w-full text-lg p-4 font-mono resize-none transition-all duration-300 bg-card text-foreground placeholder:text-muted-foreground ${
                 isActive
-                  ? "border-primary ring-2 ring-primary/30 glow-primary"
-                  : "border-border hover:border-primary/50"
-              } focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary rounded-xl`}
+                  ? "min-h-[100px] border-2 border-primary ring-2 ring-primary/20 shadow-lg shadow-primary/10"
+                  : "min-h-[60px] border border-border/60 hover:border-primary/40 focus:border-primary"
+              } focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:border-primary rounded-xl`}
               disabled={currentIndex >= text.length || timeLeft === 0}
               autoFocus
             />
 
             {/* Status Indicator */}
             {isActive && (
-              <div className="absolute top-3 right-3 flex items-center gap-2 text-xs text-success bg-success/10 px-3 py-1.5 rounded-full border border-success/30">
-                <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
+              <div className="absolute top-3 right-3 flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/30">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 Test in progress
               </div>
             )}
