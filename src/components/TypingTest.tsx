@@ -379,56 +379,56 @@ const TypingTest: React.FC<TypingTestProps> = ({
       {/* Main Card */}
       <div className="glass-strong rounded-2xl shadow-2xl overflow-hidden border border-border/50">
         {/* Live Stats Bar */}
-        <div className="bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5 border-b border-border/50 px-6 py-4">
+        <div className="ai-pattern border-b border-border/50 px-6 py-5">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {/* Live WPM */}
-            <div className="stat-card flex items-center gap-3 p-3 rounded-xl">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
-                <Zap className="w-5 h-5 text-white" />
+            <div className="stat-card-blue flex items-center gap-3 p-4 rounded-xl hover:glow-blue transition-all">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
+                <Zap className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
                   WPM
                 </p>
-                <p className="text-2xl font-bold text-primary tabular-nums">
+                <p className="text-3xl font-bold text-blue-500 tabular-nums">
                   {isActive ? liveWpm : stats.wpm}
                 </p>
               </div>
             </div>
 
             {/* Accuracy */}
-            <div className="stat-card flex items-center gap-3 p-3 rounded-xl">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-secondary to-primary flex items-center justify-center shadow-lg">
-                <Target className="w-5 h-5 text-white" />
+            <div className="stat-card-purple flex items-center gap-3 p-4 rounded-xl hover:glow-purple transition-all">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
+                <Target className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
                   Accuracy
                 </p>
-                <p className="text-2xl font-bold text-secondary tabular-nums">
+                <p className="text-3xl font-bold text-purple-500 tabular-nums">
                   {isActive ? liveAccuracy : stats.accuracy}%
                 </p>
               </div>
             </div>
 
             {/* Time */}
-            <div className="stat-card flex items-center gap-3 p-3 rounded-xl">
+            <div className={`stat-card-pink flex items-center gap-3 p-4 rounded-xl transition-all ${timeLeft <= 10 && isActive ? "glow-pink animate-pulse" : "hover:glow-pink"}`}>
               <div
-                className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transition-all ${
+                className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg transition-all ${
                   timeLeft <= 10 && isActive
-                    ? "bg-gradient-to-br from-destructive to-accent animate-pulse glow-accent"
-                    : "bg-gradient-to-br from-muted-foreground/50 to-muted-foreground/30"
+                    ? "bg-gradient-to-br from-pink-500 to-red-500"
+                    : "bg-gradient-to-br from-pink-400 to-pink-500"
                 }`}
               >
-                <Clock className="w-5 h-5 text-white" />
+                <Clock className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
                   Time
                 </p>
                 <p
-                  className={`text-2xl font-bold tabular-nums transition-colors ${
-                    timeLeft <= 10 && isActive ? "text-destructive" : "text-foreground"
+                  className={`text-3xl font-bold tabular-nums transition-colors ${
+                    timeLeft <= 10 && isActive ? "text-red-500" : "text-pink-500"
                   }`}
                 >
                   {timeLeft}s
@@ -437,17 +437,17 @@ const TypingTest: React.FC<TypingTestProps> = ({
             </div>
 
             {/* Progress */}
-            <div className="stat-card flex items-center gap-3 p-3 rounded-xl">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-success to-secondary flex items-center justify-center shadow-lg">
-                <Type className="w-5 h-5 text-white" />
+            <div className="stat-card-green flex items-center gap-3 p-4 rounded-xl hover:glow-success transition-all">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg">
+                <Type className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
                   Chars
                 </p>
-                <p className="text-2xl font-bold text-success tabular-nums">
+                <p className="text-3xl font-bold text-emerald-500 tabular-nums">
                   {currentIndex}
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-muted-foreground font-normal">
                     /{text.length}
                   </span>
                 </p>
@@ -455,10 +455,10 @@ const TypingTest: React.FC<TypingTestProps> = ({
             </div>
           </div>
 
-          {/* Progress Bar */}
-          <div className="mt-4 h-2 bg-muted rounded-full overflow-hidden">
+          {/* Rainbow Progress Bar */}
+          <div className="mt-5 h-2.5 bg-muted rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-primary via-secondary to-accent transition-all duration-300 ease-out"
+              className="h-full progress-rainbow rounded-full transition-all duration-300 ease-out"
               style={{ width: `${(currentIndex / text.length) * 100}%` }}
             />
           </div>
