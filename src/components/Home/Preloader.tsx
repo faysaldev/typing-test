@@ -1,11 +1,8 @@
 import React from "react";
 import PreloaderImage from "@/src/assets/preload_image.gif";
 import Image from "next/image";
-interface Props {
-  preloader: boolean;
-}
 
-const Preloader: React.FC<Props> = ({ preloader }) => {
+const Preloader: React.FC = () => {
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-background/90 backdrop-blur-sm flex items-center justify-center z-50">
       {/* wrapper */}
